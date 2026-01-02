@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مثال AJAX POST - AJAX POST Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+            font-family: Arial, sans-serif;
+        }
+        button {
+            background-color: #2196F3;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin: 10px 0;
+        }
+        button:hover {
+            background-color: #1976D2;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-height: 50px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .loading {
+            color: #666;
+            font-style: italic;
+        }
+        .error {
+            color: #d32f2f;
+        }
+        .success {
+            color: #388e3c;
+        }
+        .info {
+            background-color: #e3f2fd;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border-right: 4px solid #2196F3;
+        }
+        .json-display {
+            background-color: #263238;
+            color: #aed581;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            direction: ltr;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>مثال على طلب AJAX POST</h1>
+        <h2 style="text-align: center; color: #666;">AJAX POST Request Example</h2>
+        
+        <div class="info">
+            <p><strong>ملاحظة:</strong> هذا المثال يستخدم JSONPlaceholder API العام للتوضيح. البيانات لن تُحفظ فعلياً.</p>
+            <p><strong>Note:</strong> This example uses the public JSONPlaceholder API for demonstration. Data won't be actually saved.</p>
+        </div>
+
+        <!-- مثال 1: نموذج إنشاء منشور جديد -->
+        <!-- Example 1: Create new post form -->
+        <h3>مثال 1: إنشاء منشور جديد (Create New Post)</h3>
+        <form id="postForm" onsubmit="createPost(event)">
+            <div class="form-group">
+                <label for="postTitle">العنوان (Title):</label>
+                <input type="text" id="postTitle" name="title" required>
+            </div>
+            <div class="form-group">
+                <label for="postBody">المحتوى (Body):</label>
+                <textarea id="postBody" name="body" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="userId">معرف المستخدم (User ID):</label>
+                <input type="text" id="userId" name="userId" value="1" required>
+            </div>
+            <button type="submit" id="submitPost">إرسال المنشور (Submit Post)</button>
+        </form>
+
+        <hr style="margin: 30px 0;">
+
+        <!-- مثال 2: إرسال بيانات JSON -->
+        <!-- Example 2: Send JSON data -->
+        <h3>مثال 2: إرسال بيانات JSON (Send JSON Data)</h3>
+        <button onclick="sendUserData()">إرسال بيانات مستخدم (Send User Data)</button>
+        <button onclick="sendFormData()">إرسال بيانات نموذج (Send Form Data)</button>
+
+        <!-- منطقة عرض النتائج - Results display area -->
+        <div id="result">النتائج ستظهر هنا... (Results will appear here...)</div>
+    </div>
+
+    <script>
+        // مثال 1: طلب POST باستخدام XMLHttpRequest لإنشاء منشور
+        // Example 1: POST request using XMLHttpRequest to create a post
+        function createPost(event) {
+            // منع إرسال النموذج الافتراضي - Prevent default form submission
+            event.preventDefault();
+
+            // الحصول على البيانات من النموذج - Get data from form
+            const title = document.getElementById('postTitle').value;
+            const body = document.getElementById('postBody').value;
+            const userId = document.getElementById('userId').value;
+
+            // تعطيل زر الإرسال - Disable submit button
+            const button = document.getElementById('submitPost');
+            button.disabled = true;
+
+            // عرض رسالة التحميل - Show loading message
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<div class="loading">جاري الإرسال... (Sending...)</div>';
+
+            // إنشاء كائن XMLHttpRequest - Create XMLHttpRequest object
+            const xhr = new XMLHttpRequest();
+
+            // تحديد نوع الطلب والعنوان - Define request type and URL
+            xhr.open('POST', 'https://jsonplaceholder.typicode.com/posts', true);
+
+            // تعيين رأس Content-Type - Set Content-Type header
+            xhr.setRequestHeader('Content-Type', 'application/json');
+
+            // تعيين دالة معالجة الاستجابة - Set response handler
+            xhr.onload = function() {
+                button.disabled = false;
+
+                if (xhr.status === 201) {
+                    // نجح الإنشاء - Creation succeeded
+                    const response = JSON.parse(xhr.responseText);
+                    
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h3>✓ تم إنشاء المنشور بنجاح (Post created successfully)</h3>
+                            <p><strong>معرف المنشور الجديد (New Post ID):</strong> ${response.id}</p>
+                            <p><strong>العنوان (Title):</strong> ${response.title}</p>
+                            <p><strong>المحتوى (Body):</strong> ${response.body}</p>
+                            <p><strong>معرف المستخدم (User ID):</strong> ${response.userId}</p>
+                            <div class="json-display">
+                                <strong>Response JSON:</strong><br>
+                                ${JSON.stringify(response, null, 2)}
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            ✗ خطأ (Error): ${xhr.status} - ${xhr.statusText}
+                        </div>
+                    `;
+                }
+            };
+
+            // معالجة أخطاء الشبكة - Handle network errors
+            xhr.onerror = function() {
+                button.disabled = false;
+                resultDiv.innerHTML = '<div class="error">✗ حدث خطأ في الشبكة (Network error occurred)</div>';
+            };
+
+            // إعداد البيانات للإرسال - Prepare data to send
+            const data = JSON.stringify({
+                title: title,
+                body: body,
+                userId: parseInt(userId)
+            });
+
+            // إرسال الطلب مع البيانات - Send request with data
+            xhr.send(data);
+        }
+
+        // مثال 2: طلب POST باستخدام Fetch API (طريقة حديثة)
+        // Example 2: POST request using Fetch API (modern approach)
+        async function sendUserData() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<div class="loading">جاري الإرسال... (Sending...)</div>';
+
+            // بيانات المستخدم للإرسال - User data to send
+            const userData = {
+                name: 'أحمد محمد',
+                username: 'ahmed_m',
+                email: 'ahmed@example.com',
+                phone: '01234567890',
+                website: 'ahmed.example.com'
+            };
+
+            try {
+                // إرسال طلب POST باستخدام Fetch - Send POST request using Fetch
+                const response = await fetch('https://jsonplaceholder.typicode.com/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(userData)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        <h3>✓ تم إرسال بيانات المستخدم بنجاح (User data sent successfully)</h3>
+                        <p><strong>معرف المستخدم الجديد (New User ID):</strong> ${result.id}</p>
+                        <p><strong>الاسم (Name):</strong> ${result.name}</p>
+                        <p><strong>اسم المستخدم (Username):</strong> ${result.username}</p>
+                        <p><strong>البريد الإلكتروني (Email):</strong> ${result.email}</p>
+                        <div class="json-display">
+                            <strong>Response JSON:</strong><br>
+                            ${JSON.stringify(result, null, 2)}
+                        </div>
+                    </div>
+                `;
+
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        ✗ خطأ (Error): ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // مثال 3: إرسال بيانات FormData
+        // Example 3: Send FormData
+        function sendFormData() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<div class="loading">جاري الإرسال... (Sending...)</div>';
+
+            // إنشاء كائن FormData - Create FormData object
+            const formData = new FormData();
+            formData.append('title', 'مثال على FormData');
+            formData.append('body', 'هذا مثال على إرسال بيانات باستخدام FormData');
+            formData.append('userId', '5');
+
+            // استخدام Fetch مع FormData - Use Fetch with FormData
+            fetch('https://jsonplaceholder.typicode.com/posts', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        <h3>✓ تم إرسال FormData بنجاح (FormData sent successfully)</h3>
+                        <p><strong>معرف المنشور (Post ID):</strong> ${data.id}</p>
+                        <div class="json-display">
+                            <strong>Response JSON:</strong><br>
+                            ${JSON.stringify(data, null, 2)}
+                        </div>
+                    </div>
+                `;
+            })
+            .catch(error => {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        ✗ خطأ (Error): ${error.message}
+                    </div>
+                `;
+            });
+        }
+    </script>
+</body>
+</html>
