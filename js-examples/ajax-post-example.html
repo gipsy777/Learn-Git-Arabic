@@ -140,7 +140,7 @@
         <button onclick="sendFormData()">إرسال بيانات نموذج (Send Form Data)</button>
 
         <!-- منطقة عرض النتائج - Results display area -->
-        <div id="result">النتائج ستظهر هنا... (Results will appear here...)</div>
+        <div id="result" aria-live="polite">النتائج ستظهر هنا... (Results will appear here...)</div>
     </div>
 
     <script>
@@ -177,35 +177,77 @@
                 button.disabled = false;
 
                 if (xhr.status === 201) {
-                    // نجح الإنشاء - Creation succeeded
-                    const response = JSON.parse(xhr.responseText);
-                    
-                    resultDiv.innerHTML = `
-                        <div class="success">
-                            <h3>✓ تم إنشاء المنشور بنجاح (Post created successfully)</h3>
-                            <p><strong>معرف المنشور الجديد (New Post ID):</strong> ${response.id}</p>
-                            <p><strong>العنوان (Title):</strong> ${response.title}</p>
-                            <p><strong>المحتوى (Body):</strong> ${response.body}</p>
-                            <p><strong>معرف المستخدم (User ID):</strong> ${response.userId}</p>
-                            <div class="json-display">
-                                <strong>Response JSON:</strong><br>
-                                ${JSON.stringify(response, null, 2)}
-                            </div>
-                        </div>
-                    `;
+                    try {
+                        // نجح الإنشاء - Creation succeeded
+                        const response = JSON.parse(xhr.responseText);
+                        
+                        resultDiv.textContent = '';
+                        
+                        const successDiv = document.createElement('div');
+                        successDiv.className = 'success';
+                        
+                        const heading = document.createElement('h3');
+                        heading.textContent = '✓ تم إنشاء المنشور بنجاح (Post created successfully)';
+                        successDiv.appendChild(heading);
+                        
+                        const idP = document.createElement('p');
+                        idP.innerHTML = '<strong>معرف المنشور الجديد (New Post ID):</strong> ';
+                        idP.appendChild(document.createTextNode(response.id));
+                        successDiv.appendChild(idP);
+                        
+                        const titleP = document.createElement('p');
+                        titleP.innerHTML = '<strong>العنوان (Title):</strong> ';
+                        titleP.appendChild(document.createTextNode(response.title));
+                        successDiv.appendChild(titleP);
+                        
+                        const bodyP = document.createElement('p');
+                        bodyP.innerHTML = '<strong>المحتوى (Body):</strong> ';
+                        bodyP.appendChild(document.createTextNode(response.body));
+                        successDiv.appendChild(bodyP);
+                        
+                        const userIdP = document.createElement('p');
+                        userIdP.innerHTML = '<strong>معرف المستخدم (User ID):</strong> ';
+                        userIdP.appendChild(document.createTextNode(response.userId));
+                        successDiv.appendChild(userIdP);
+                        
+                        const jsonDiv = document.createElement('div');
+                        jsonDiv.className = 'json-display';
+                        const jsonLabel = document.createElement('strong');
+                        jsonLabel.textContent = 'Response JSON:';
+                        jsonDiv.appendChild(jsonLabel);
+                        jsonDiv.appendChild(document.createElement('br'));
+                        const jsonPre = document.createElement('pre');
+                        jsonPre.textContent = JSON.stringify(response, null, 2);
+                        jsonPre.style.margin = '0';
+                        jsonDiv.appendChild(jsonPre);
+                        successDiv.appendChild(jsonDiv);
+                        
+                        resultDiv.appendChild(successDiv);
+                    } catch (error) {
+                        // معالجة خطأ تحليل JSON - Handle JSON parse error
+                        resultDiv.textContent = '';
+                        const errorDiv = document.createElement('div');
+                        errorDiv.className = 'error';
+                        errorDiv.textContent = '✗ خطأ في تحليل البيانات (Error parsing data): ' + error.message;
+                        resultDiv.appendChild(errorDiv);
+                    }
                 } else {
-                    resultDiv.innerHTML = `
-                        <div class="error">
-                            ✗ خطأ (Error): ${xhr.status} - ${xhr.statusText}
-                        </div>
-                    `;
+                    resultDiv.textContent = '';
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'error';
+                    errorDiv.textContent = '✗ خطأ (Error): ' + xhr.status + ' - ' + xhr.statusText;
+                    resultDiv.appendChild(errorDiv);
                 }
             };
 
             // معالجة أخطاء الشبكة - Handle network errors
             xhr.onerror = function() {
                 button.disabled = false;
-                resultDiv.innerHTML = '<div class="error">✗ حدث خطأ في الشبكة (Network error occurred)</div>';
+                resultDiv.textContent = '';
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error';
+                errorDiv.textContent = '✗ حدث خطأ في الشبكة (Network error occurred)';
+                resultDiv.appendChild(errorDiv);
             };
 
             // إعداد البيانات للإرسال - Prepare data to send
@@ -227,11 +269,11 @@
 
             // بيانات المستخدم للإرسال - User data to send
             const userData = {
-                name: 'أحمد محمد',
-                username: 'ahmed_m',
-                email: 'ahmed@example.com',
-                phone: '01234567890',
-                website: 'ahmed.example.com'
+                name: 'NAME_EXAMPLE',
+                username: 'username_example',
+                email: 'name@example.com',
+                phone: 'PHONE_EXAMPLE',
+                website: 'example.com'
             };
 
             try {
@@ -250,26 +292,55 @@
 
                 const result = await response.json();
 
-                resultDiv.innerHTML = `
-                    <div class="success">
-                        <h3>✓ تم إرسال بيانات المستخدم بنجاح (User data sent successfully)</h3>
-                        <p><strong>معرف المستخدم الجديد (New User ID):</strong> ${result.id}</p>
-                        <p><strong>الاسم (Name):</strong> ${result.name}</p>
-                        <p><strong>اسم المستخدم (Username):</strong> ${result.username}</p>
-                        <p><strong>البريد الإلكتروني (Email):</strong> ${result.email}</p>
-                        <div class="json-display">
-                            <strong>Response JSON:</strong><br>
-                            ${JSON.stringify(result, null, 2)}
-                        </div>
-                    </div>
-                `;
+                resultDiv.textContent = '';
+                
+                const successDiv = document.createElement('div');
+                successDiv.className = 'success';
+                
+                const heading = document.createElement('h3');
+                heading.textContent = '✓ تم إرسال بيانات المستخدم بنجاح (User data sent successfully)';
+                successDiv.appendChild(heading);
+                
+                const idP = document.createElement('p');
+                idP.innerHTML = '<strong>معرف المستخدم الجديد (New User ID):</strong> ';
+                idP.appendChild(document.createTextNode(result.id));
+                successDiv.appendChild(idP);
+                
+                const nameP = document.createElement('p');
+                nameP.innerHTML = '<strong>الاسم (Name):</strong> ';
+                nameP.appendChild(document.createTextNode(result.name));
+                successDiv.appendChild(nameP);
+                
+                const usernameP = document.createElement('p');
+                usernameP.innerHTML = '<strong>اسم المستخدم (Username):</strong> ';
+                usernameP.appendChild(document.createTextNode(result.username));
+                successDiv.appendChild(usernameP);
+                
+                const emailP = document.createElement('p');
+                emailP.innerHTML = '<strong>البريد الإلكتروني (Email):</strong> ';
+                emailP.appendChild(document.createTextNode(result.email));
+                successDiv.appendChild(emailP);
+                
+                const jsonDiv = document.createElement('div');
+                jsonDiv.className = 'json-display';
+                const jsonLabel = document.createElement('strong');
+                jsonLabel.textContent = 'Response JSON:';
+                jsonDiv.appendChild(jsonLabel);
+                jsonDiv.appendChild(document.createElement('br'));
+                const jsonPre = document.createElement('pre');
+                jsonPre.textContent = JSON.stringify(result, null, 2);
+                jsonPre.style.margin = '0';
+                jsonDiv.appendChild(jsonPre);
+                successDiv.appendChild(jsonDiv);
+                
+                resultDiv.appendChild(successDiv);
 
             } catch (error) {
-                resultDiv.innerHTML = `
-                    <div class="error">
-                        ✗ خطأ (Error): ${error.message}
-                    </div>
-                `;
+                resultDiv.textContent = '';
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error';
+                errorDiv.textContent = '✗ خطأ (Error): ' + error.message;
+                resultDiv.appendChild(errorDiv);
             }
         }
 
@@ -297,23 +368,40 @@
                 return response.json();
             })
             .then(data => {
-                resultDiv.innerHTML = `
-                    <div class="success">
-                        <h3>✓ تم إرسال FormData بنجاح (FormData sent successfully)</h3>
-                        <p><strong>معرف المنشور (Post ID):</strong> ${data.id}</p>
-                        <div class="json-display">
-                            <strong>Response JSON:</strong><br>
-                            ${JSON.stringify(data, null, 2)}
-                        </div>
-                    </div>
-                `;
+                resultDiv.textContent = '';
+                
+                const successDiv = document.createElement('div');
+                successDiv.className = 'success';
+                
+                const heading = document.createElement('h3');
+                heading.textContent = '✓ تم إرسال FormData بنجاح (FormData sent successfully)';
+                successDiv.appendChild(heading);
+                
+                const idP = document.createElement('p');
+                idP.innerHTML = '<strong>معرف المنشور (Post ID):</strong> ';
+                idP.appendChild(document.createTextNode(data.id));
+                successDiv.appendChild(idP);
+                
+                const jsonDiv = document.createElement('div');
+                jsonDiv.className = 'json-display';
+                const jsonLabel = document.createElement('strong');
+                jsonLabel.textContent = 'Response JSON:';
+                jsonDiv.appendChild(jsonLabel);
+                jsonDiv.appendChild(document.createElement('br'));
+                const jsonPre = document.createElement('pre');
+                jsonPre.textContent = JSON.stringify(data, null, 2);
+                jsonPre.style.margin = '0';
+                jsonDiv.appendChild(jsonPre);
+                successDiv.appendChild(jsonDiv);
+                
+                resultDiv.appendChild(successDiv);
             })
             .catch(error => {
-                resultDiv.innerHTML = `
-                    <div class="error">
-                        ✗ خطأ (Error): ${error.message}
-                    </div>
-                `;
+                resultDiv.textContent = '';
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error';
+                errorDiv.textContent = '✗ خطأ (Error): ' + error.message;
+                resultDiv.appendChild(errorDiv);
             });
         }
     </script>

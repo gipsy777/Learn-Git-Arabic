@@ -73,7 +73,16 @@ This file demonstrates how to send data to the server using different methods:
    - يمكن تشغيلها مباشرة من نظام الملفات
    - Can be run directly from the file system
 
-3. **الاستكشاف | Exploration:**
+3. **ملاحظة حول CORS | Note about CORS:**
+   - إذا واجهت مشاكل CORS عند فتح الملفات من `file://`، قم بتشغيل خادم محلي بسيط
+   - If you encounter CORS issues when opening files from `file://`, run a simple local server:
+   ```bash
+   # استخدم Python لتشغيل خادم محلي | Use Python to run a local server
+   python -m http.server 8000
+   # ثم افتح | Then open: http://localhost:8000
+   ```
+
+4. **الاستكشاف | Exploration:**
    - جرب الأزرار المختلفة لرؤية كيف تعمل طلبات AJAX
    - Try different buttons to see how AJAX requests work
    - افتح أدوات المطور (F12) لرؤية طلبات الشبكة
@@ -137,6 +146,40 @@ Programming patterns for handling asynchronous operations in a more readable way
   
 - **Async/Await**: مدعوم في المتصفحات الحديثة (ES2017+)
   - Supported in modern browsers (ES2017+)
+
+---
+
+## اعتبارات الأمان | Security Considerations
+
+⚠️ **مهم | Important:**
+
+1. **مخاطر XSS (Cross-Site Scripting):**
+   - تجنب إدراج HTML مباشرة من مصادر غير موثوقة باستخدام `innerHTML`
+   - Avoid inserting HTML directly from untrusted sources using `innerHTML`
+   - الأمثلة في هذا المجلد تستخدم عمليات DOM آمنة مثل `textContent` و `createElement`
+   - Examples in this folder use safe DOM operations like `textContent` and `createElement`
+
+2. **عند الحاجة لإدراج HTML من مصادر غير موثوقة:**
+   - استخدم مكتبة تنقية مثل DOMPurify
+   - Use a sanitization library like DOMPurify
+   ```javascript
+   // مثال | Example:
+   resultDiv.innerHTML = DOMPurify.sanitize(untrustedHTML);
+   ```
+
+3. **معالجة الأخطاء | Error Handling:**
+   - تأكد دائماً من التحقق من حالة الاستجابة
+   - Always verify response status
+   - استخدم `try/catch` عند تحليل JSON
+   - Use `try/catch` when parsing JSON
+   - قدم رسائل خطأ واضحة للمستخدم
+   - Provide clear error messages to users
+
+4. **بيانات الاختبار | Test Data:**
+   - استخدم بيانات وهمية واضحة في الأمثلة (مثل NAME_EXAMPLE, name@example.com)
+   - Use obvious placeholder data in examples (like NAME_EXAMPLE, name@example.com)
+   - لا تستخدم بيانات شخصية حقيقية
+   - Don't use real personal data
 
 ---
 

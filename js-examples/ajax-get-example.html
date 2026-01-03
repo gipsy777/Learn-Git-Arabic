@@ -85,7 +85,7 @@
         <button id="getAllUsers" onclick="fetchAllUsers()">جلب جميع المستخدمين (Fetch All Users)</button>
 
         <!-- منطقة عرض النتائج - Results display area -->
-        <div id="result">النتائج ستظهر هنا... (Results will appear here...)</div>
+        <div id="result" aria-live="polite">النتائج ستظهر هنا... (Results will appear here...)</div>
     </div>
 
     <script>
@@ -111,35 +111,78 @@
                 button.disabled = false;
                 
                 if (xhr.status === 200) {
-                    // نجح الطلب - Request succeeded
-                    const data = JSON.parse(xhr.responseText);
-                    
-                    // عرض البيانات بشكل منسق - Display data in formatted way
-                    resultDiv.innerHTML = `
-                        <div class="success">
-                            <h3>✓ تم جلب البيانات بنجاح (Data fetched successfully)</h3>
-                            <p><strong>الاسم (Name):</strong> ${data.name}</p>
-                            <p><strong>اسم المستخدم (Username):</strong> ${data.username}</p>
-                            <p><strong>البريد الإلكتروني (Email):</strong> ${data.email}</p>
-                            <p><strong>الهاتف (Phone):</strong> ${data.phone}</p>
-                            <p><strong>الموقع (Website):</strong> ${data.website}</p>
-                            <p><strong>المدينة (City):</strong> ${data.address.city}</p>
-                        </div>
-                    `;
+                    try {
+                        // نجح الطلب - Request succeeded
+                        const data = JSON.parse(xhr.responseText);
+                        
+                        // عرض البيانات بشكل منسق - Display data in formatted way
+                        // Clear previous content
+                        resultDiv.textContent = '';
+                        
+                        const successDiv = document.createElement('div');
+                        successDiv.className = 'success';
+                        
+                        const heading = document.createElement('h3');
+                        heading.textContent = '✓ تم جلب البيانات بنجاح (Data fetched successfully)';
+                        successDiv.appendChild(heading);
+                        
+                        const nameP = document.createElement('p');
+                        nameP.innerHTML = '<strong>الاسم (Name):</strong> ';
+                        nameP.appendChild(document.createTextNode(data.name));
+                        successDiv.appendChild(nameP);
+                        
+                        const usernameP = document.createElement('p');
+                        usernameP.innerHTML = '<strong>اسم المستخدم (Username):</strong> ';
+                        usernameP.appendChild(document.createTextNode(data.username));
+                        successDiv.appendChild(usernameP);
+                        
+                        const emailP = document.createElement('p');
+                        emailP.innerHTML = '<strong>البريد الإلكتروني (Email):</strong> ';
+                        emailP.appendChild(document.createTextNode(data.email));
+                        successDiv.appendChild(emailP);
+                        
+                        const phoneP = document.createElement('p');
+                        phoneP.innerHTML = '<strong>الهاتف (Phone):</strong> ';
+                        phoneP.appendChild(document.createTextNode(data.phone));
+                        successDiv.appendChild(phoneP);
+                        
+                        const websiteP = document.createElement('p');
+                        websiteP.innerHTML = '<strong>الموقع (Website):</strong> ';
+                        websiteP.appendChild(document.createTextNode(data.website));
+                        successDiv.appendChild(websiteP);
+                        
+                        const cityP = document.createElement('p');
+                        cityP.innerHTML = '<strong>المدينة (City):</strong> ';
+                        cityP.appendChild(document.createTextNode(data.address.city));
+                        successDiv.appendChild(cityP);
+                        
+                        resultDiv.appendChild(successDiv);
+                    } catch (error) {
+                        // معالجة خطأ تحليل JSON - Handle JSON parse error
+                        resultDiv.textContent = '';
+                        const errorDiv = document.createElement('div');
+                        errorDiv.className = 'error';
+                        errorDiv.textContent = '✗ خطأ في تحليل البيانات (Error parsing data): ' + error.message;
+                        resultDiv.appendChild(errorDiv);
+                    }
                 } else {
                     // فشل الطلب - Request failed
-                    resultDiv.innerHTML = `
-                        <div class="error">
-                            ✗ خطأ (Error): ${xhr.status} - ${xhr.statusText}
-                        </div>
-                    `;
+                    resultDiv.textContent = '';
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'error';
+                    errorDiv.textContent = '✗ خطأ (Error): ' + xhr.status + ' - ' + xhr.statusText;
+                    resultDiv.appendChild(errorDiv);
                 }
             };
 
             // معالجة أخطاء الشبكة - Handle network errors
             xhr.onerror = function() {
                 button.disabled = false;
-                resultDiv.innerHTML = '<div class="error">✗ حدث خطأ في الشبكة (Network error occurred)</div>';
+                resultDiv.textContent = '';
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error';
+                errorDiv.textContent = '✗ حدث خطأ في الشبكة (Network error occurred)';
+                resultDiv.appendChild(errorDiv);
             };
 
             // إرسال الطلب - Send the request
@@ -166,23 +209,44 @@
                 })
                 .then(data => {
                     // عرض بيانات المنشور - Display post data
-                    resultDiv.innerHTML = `
-                        <div class="success">
-                            <h3>✓ تم جلب المنشور بنجاح (Post fetched successfully)</h3>
-                            <p><strong>معرف المستخدم (User ID):</strong> ${data.userId}</p>
-                            <p><strong>معرف المنشور (Post ID):</strong> ${data.id}</p>
-                            <p><strong>العنوان (Title):</strong> ${data.title}</p>
-                            <p><strong>المحتوى (Body):</strong> ${data.body}</p>
-                        </div>
-                    `;
+                    resultDiv.textContent = '';
+                    
+                    const successDiv = document.createElement('div');
+                    successDiv.className = 'success';
+                    
+                    const heading = document.createElement('h3');
+                    heading.textContent = '✓ تم جلب المنشور بنجاح (Post fetched successfully)';
+                    successDiv.appendChild(heading);
+                    
+                    const userIdP = document.createElement('p');
+                    userIdP.innerHTML = '<strong>معرف المستخدم (User ID):</strong> ';
+                    userIdP.appendChild(document.createTextNode(data.userId));
+                    successDiv.appendChild(userIdP);
+                    
+                    const postIdP = document.createElement('p');
+                    postIdP.innerHTML = '<strong>معرف المنشور (Post ID):</strong> ';
+                    postIdP.appendChild(document.createTextNode(data.id));
+                    successDiv.appendChild(postIdP);
+                    
+                    const titleP = document.createElement('p');
+                    titleP.innerHTML = '<strong>العنوان (Title):</strong> ';
+                    titleP.appendChild(document.createTextNode(data.title));
+                    successDiv.appendChild(titleP);
+                    
+                    const bodyP = document.createElement('p');
+                    bodyP.innerHTML = '<strong>المحتوى (Body):</strong> ';
+                    bodyP.appendChild(document.createTextNode(data.body));
+                    successDiv.appendChild(bodyP);
+                    
+                    resultDiv.appendChild(successDiv);
                 })
                 .catch(error => {
                     // معالجة الأخطاء - Handle errors
-                    resultDiv.innerHTML = `
-                        <div class="error">
-                            ✗ خطأ (Error): ${error.message}
-                        </div>
-                    `;
+                    resultDiv.textContent = '';
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'error';
+                    errorDiv.textContent = '✗ خطأ (Error): ' + error.message;
+                    resultDiv.appendChild(errorDiv);
                 })
                 .finally(() => {
                     // إعادة تفعيل الزر - Re-enable button
@@ -209,21 +273,39 @@
                 
                 const users = await response.json();
                 
-                // إنشاء قائمة HTML للمستخدمين - Create HTML list of users
-                let usersList = '<div class="success"><h3>✓ قائمة المستخدمين (Users List)</h3><ul style="text-align: right;">';
-                users.forEach(user => {
-                    usersList += `<li><strong>${user.name}</strong> (${user.email})</li>`;
-                });
-                usersList += '</ul></div>';
+                // إنشاء قائمة للمستخدمين - Create list of users
+                resultDiv.textContent = '';
                 
-                resultDiv.innerHTML = usersList;
+                const successDiv = document.createElement('div');
+                successDiv.className = 'success';
+                
+                const heading = document.createElement('h3');
+                heading.textContent = '✓ قائمة المستخدمين (Users List)';
+                successDiv.appendChild(heading);
+                
+                const ul = document.createElement('ul');
+                ul.style.textAlign = 'right';
+                
+                users.forEach(user => {
+                    const li = document.createElement('li');
+                    const strong = document.createElement('strong');
+                    strong.textContent = user.name;
+                    li.appendChild(strong);
+                    li.appendChild(document.createTextNode(' ('));
+                    li.appendChild(document.createTextNode(user.email));
+                    li.appendChild(document.createTextNode(')'));
+                    ul.appendChild(li);
+                });
+                
+                successDiv.appendChild(ul);
+                resultDiv.appendChild(successDiv);
                 
             } catch (error) {
-                resultDiv.innerHTML = `
-                    <div class="error">
-                        ✗ خطأ (Error): ${error.message}
-                    </div>
-                `;
+                resultDiv.textContent = '';
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error';
+                errorDiv.textContent = '✗ خطأ (Error): ' + error.message;
+                resultDiv.appendChild(errorDiv);
             } finally {
                 button.disabled = false;
             }
