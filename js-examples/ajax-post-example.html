@@ -136,8 +136,8 @@
         <!-- مثال 2: إرسال بيانات JSON -->
         <!-- Example 2: Send JSON data -->
         <h3>مثال 2: إرسال بيانات JSON (Send JSON Data)</h3>
-        <button onclick="sendUserData()">إرسال بيانات مستخدم (Send User Data)</button>
-        <button onclick="sendFormData()">إرسال بيانات نموذج (Send Form Data)</button>
+        <button id="sendUser" onclick="sendUserData()">إرسال بيانات مستخدم (Send User Data)</button>
+        <button id="sendForm" onclick="sendFormData()">إرسال بيانات نموذج (Send Form Data)</button>
 
         <!-- منطقة عرض النتائج - Results display area -->
         <div id="result" aria-live="polite">النتائج ستظهر هنا... (Results will appear here...)</div>
@@ -264,6 +264,9 @@
         // مثال 2: طلب POST باستخدام Fetch API (طريقة حديثة)
         // Example 2: POST request using Fetch API (modern approach)
         async function sendUserData() {
+            const button = document.getElementById('sendUser');
+            button.disabled = true;
+            
             const resultDiv = document.getElementById('result');
             resultDiv.innerHTML = '<div class="loading">جاري الإرسال... (Sending...)</div>';
 
@@ -341,12 +344,17 @@
                 errorDiv.className = 'error';
                 errorDiv.textContent = '✗ خطأ (Error): ' + error.message;
                 resultDiv.appendChild(errorDiv);
+            } finally {
+                button.disabled = false;
             }
         }
 
         // مثال 3: إرسال بيانات FormData
         // Example 3: Send FormData
         function sendFormData() {
+            const button = document.getElementById('sendForm');
+            button.disabled = true;
+            
             const resultDiv = document.getElementById('result');
             resultDiv.innerHTML = '<div class="loading">جاري الإرسال... (Sending...)</div>';
 
@@ -402,6 +410,9 @@
                 errorDiv.className = 'error';
                 errorDiv.textContent = '✗ خطأ (Error): ' + error.message;
                 resultDiv.appendChild(errorDiv);
+            })
+            .finally(() => {
+                button.disabled = false;
             });
         }
     </script>
