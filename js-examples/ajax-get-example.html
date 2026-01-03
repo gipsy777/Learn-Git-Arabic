@@ -98,7 +98,11 @@
             
             // عرض رسالة التحميل - Show loading message
             const resultDiv = document.getElementById('result');
-            resultDiv.innerHTML = '<div class="loading">جاري التحميل... (Loading...)</div>';
+            resultDiv.textContent = '';
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'loading';
+            loadingDiv.textContent = 'جاري التحميل... (Loading...)';
+            resultDiv.appendChild(loadingDiv);
 
             // إنشاء كائن XMLHttpRequest - Create XMLHttpRequest object
             const xhr = new XMLHttpRequest();
@@ -196,7 +200,11 @@
             button.disabled = true;
             
             const resultDiv = document.getElementById('result');
-            resultDiv.innerHTML = '<div class="loading">جاري التحميل... (Loading...)</div>';
+            resultDiv.textContent = '';
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'loading';
+            loadingDiv.textContent = 'جاري التحميل... (Loading...)';
+            resultDiv.appendChild(loadingDiv);
 
             // استخدام Fetch API - Using Fetch API
             fetch('https://jsonplaceholder.typicode.com/posts/1')
@@ -261,7 +269,11 @@
             button.disabled = true;
             
             const resultDiv = document.getElementById('result');
-            resultDiv.innerHTML = '<div class="loading">جاري التحميل... (Loading...)</div>';
+            resultDiv.textContent = '';
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'loading';
+            loadingDiv.textContent = 'جاري التحميل... (Loading...)';
+            resultDiv.appendChild(loadingDiv);
 
             try {
                 // استخدام async/await مع Fetch - Using async/await with Fetch

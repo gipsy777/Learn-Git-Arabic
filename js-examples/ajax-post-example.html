@@ -161,7 +161,11 @@
 
             // عرض رسالة التحميل - Show loading message
             const resultDiv = document.getElementById('result');
-            resultDiv.innerHTML = '<div class="loading">جاري الإرسال... (Sending...)</div>';
+            resultDiv.textContent = '';
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'loading';
+            loadingDiv.textContent = 'جاري الإرسال... (Sending...)';
+            resultDiv.appendChild(loadingDiv);
 
             // إنشاء كائن XMLHttpRequest - Create XMLHttpRequest object
             const xhr = new XMLHttpRequest();
@@ -268,7 +272,11 @@
             button.disabled = true;
             
             const resultDiv = document.getElementById('result');
-            resultDiv.innerHTML = '<div class="loading">جاري الإرسال... (Sending...)</div>';
+            resultDiv.textContent = '';
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'loading';
+            loadingDiv.textContent = 'جاري الإرسال... (Sending...)';
+            resultDiv.appendChild(loadingDiv);
 
             // بيانات المستخدم للإرسال - User data to send
             const userData = {
@@ -356,7 +364,11 @@
             button.disabled = true;
             
             const resultDiv = document.getElementById('result');
-            resultDiv.innerHTML = '<div class="loading">جاري الإرسال... (Sending...)</div>';
+            resultDiv.textContent = '';
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'loading';
+            loadingDiv.textContent = 'جاري الإرسال... (Sending...)';
+            resultDiv.appendChild(loadingDiv);
 
             // إنشاء كائن FormData - Create FormData object
             const formData = new FormData();
