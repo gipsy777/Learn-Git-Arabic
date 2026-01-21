@@ -15,6 +15,8 @@ _Sık kullanılan Git komutları listesi_
 
 *Git takma adlarıyla ilgileniyorsanız, burada bulunan '.bash_profile'ine bir göz atın: https://github.com/joshnh/bash_profile/blob/master/.bash_profile*
 
+*GitHub Copilot güvenlik, gizlilik ve uyumluluk hakkında daha fazla bilgi için, [GitHub Copilot Güven Merkezi](https://copilot.github.trust.page/)ni ziyaret edin*
+
 *Çeviride önemli İngilizce kelimelerinin aslı korunmuş olup, "repository" kelimesi "repo" olarak, "local" kelimesi "yerel" olarak, "remote" kelimesi "uzak" olarak çevrilmiştir. Bunları göz önünde bulundurarak dokümandan istifade edebilirsiniz."
 
 --
