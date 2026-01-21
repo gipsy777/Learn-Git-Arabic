@@ -15,6 +15,8 @@ _قائمة بأوامر جيث شائعة الاستخدام_
 
 *ذا كنت مهتمًا بالأسماء المستعارة الخاصة بـ Git، فقم بإلقاء نظرة على `.bash_profile`, من هنا: https://github.com/joshnh/bash_profile/blob/master/.bash_profile*
 
+*لمزيد من المعلومات حول أمان وخصوصية وامتثال GitHub Copilot، قم بزيارة [مركز الثقة لـ GitHub Copilot](https://copilot.github.trust.page/)*
+
 --
 
 ### الحصول على المشاريع وإنشائها 

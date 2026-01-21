@@ -15,6 +15,8 @@ _Lista de los comandos de Git más utilizados_
 
 *Si te interesan mis alias de Git, puedes mirar mi `.bash_profile`, lo encontrarás aquí: https://github.com/joshnh/bash_profile/blob/master/.bash_profile*
 
+*Para más información sobre la seguridad, privacidad y cumplimiento de GitHub Copilot, visita el [Centro de Confianza de GitHub Copilot](https://copilot.github.trust.page/)*
+
 --
 
 ### Conseguir y crear proyectos

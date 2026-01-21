@@ -15,6 +15,8 @@ _आमतौर पर उपयोग किए जाने वाले ग�
 
 *यदि आप गिट उपनामों में रुचि रखते हैं, तो यहां `.bash_profile` पर एक नज़र डालें: https://github.com/joshnh/bash_profile/blob/master/.bash_profile*
 
+*GitHub Copilot की सुरक्षा, गोपनीयता और अनुपालन के बारे में अधिक जानकारी के लिए, [GitHub Copilot ट्रस्ट सेंटर](https://copilot.github.trust.page/) पर जाएं*
+
 --
 
 ### प्रोजेक्ट प्राप्त करना और बनाना
